@@ -16,8 +16,9 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    max-width: 1400px;
-    margin: 0 auto;
+    width: 100%;
+    max-width: none;
+    margin: 0;
     background-color: #fff;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
 }
@@ -26,10 +27,10 @@ body {
 header {
     background: #210F37;
     color: white;
-    padding: 0 2rem;
+    padding: 0 1.5rem;
     height: 6.25rem;
     display: flex;
-    align-items: stretch;
+    align-items: center;
     justify-content: center;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
@@ -56,8 +57,16 @@ header .logo {
     flex: 1;
 }
 
+/* Wrapper for header, content and footer alongside the sidebar */
+.main-area {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
 /* Sidebar Navigation */
 .sidebar {
+    position: relative;
     width: 250px;
     background-color: #f8f9fa;
     padding: 25px 20px;
@@ -314,4 +323,40 @@ footer {
     .level-content h3, .content .level-content h3 {
         margin-top: 30px;
     }
+}
+
+/* Hide sidebar when collapsed */
+.sidebar.collapsed {
+    width: 50px;
+    padding: 10px;
+    border-right: none;
+    overflow: visible;
+}
+
+.sidebar.collapsed .level-group {
+    display: none;
+}
+
+.sidebar.collapsed .sidebar-toggle {
+    display: block;
+    margin: 0 auto;
+}
+
+.layout {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.sidebar-toggle {
+    background: transparent;
+    border: none;
+    color: #4F1C51;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    position: absolute;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
 }
