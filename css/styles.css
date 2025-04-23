@@ -24,7 +24,7 @@ body {
 
 /* Header */
 header {
-    background: linear-gradient(135deg, #0066cc, #004999);
+    background: #210F37;
     color: white;
     padding: 0 2rem;
     height: 6.25rem;
@@ -72,7 +72,7 @@ header .logo {
 
 .level-group h2 {
     font-size: 1.1rem;
-    color: #0066cc;
+    color: #4F1C51;
     margin-bottom: 12px;
     padding-bottom: 8px;
     border-bottom: 1px solid #dee2e6;
@@ -99,14 +99,14 @@ header .logo {
 
 .sidebar a:hover {
     background-color: #e9ecef;
-    color: #0066cc;
+    color: #4F1C51;
 }
 
 .sidebar a.active {
-    background-color: #e7f1ff;
-    color: #0066cc;
+    background-color: rgba(129, 116, 160, 0.4);
+    color: #4F1C51;
     font-weight: 500;
-    border-left: 3px solid #0066cc;
+    border-left: 3px solid #4F1C51;
 }
 
 /* Main Content */
@@ -126,7 +126,7 @@ header .logo {
 }
 
 .welcome-message h2 {
-    color: #0066cc;
+    color: #4F1C51;
     margin-bottom: 20px;
     font-weight: 600;
     font-size: 1.8rem;
@@ -144,7 +144,7 @@ header .logo {
 }
 
 .welcome-message strong {
-    color: #0066cc;
+    color: #4F1C51;
 }
 
 /* Footer */
@@ -189,8 +189,8 @@ footer {
 }
 
 .level-content h1, .content .level-content h1 {
-    color: #0066cc;
-    border-bottom: 2px solid #0066cc;
+    color: #4F1C51;
+    border-bottom: 2px solid #4F1C51;
     padding-bottom: 12px;
     margin-bottom: 35px;
     font-weight: 600;
@@ -198,7 +198,7 @@ footer {
 }
 
 .level-content h2, .content .level-content h2 {
-    color: #0066cc;
+    color: #4F1C51;
     margin-top: 60px;
     margin-bottom: 20px;
     font-weight: 600;
@@ -208,7 +208,7 @@ footer {
 }
 
 .level-content h3, .content .level-content h3 {
-    color: #0066cc;
+    color: #4F1C51;
     margin-top: 40px;
     margin-bottom: 18px;
     font-weight: 500;
@@ -250,7 +250,7 @@ footer {
 
 .level-content th, .content .level-content th {
     background-color: #f1f5f9;
-    color: #0066cc;
+    color: #4F1C51;
     font-weight: 600;
 }
 
@@ -259,14 +259,14 @@ footer {
 }
 
 .level-content .highlight, .content .highlight {
-    color: #cc0000;
+    color: #ed4227;
     font-weight: bold;
 }
 
 .level-content .example, .content .example {
     background-color: #f8f9fa;
     padding: 18px;
-    border-left: 4px solid #0066cc;
+    border-left: 4px solid #4F1C51;
     margin: 30px 0;
     border-radius: 0 6px 6px 0;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
