@@ -52,9 +52,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Function to load content
     function loadContent(url) {
-        // Show loading indicator
-        contentContainer.innerHTML = '<div class="loading">Loading content...</div>';
-        
         // Fetch the HTML content
         fetch(url)
             .then(response => {
