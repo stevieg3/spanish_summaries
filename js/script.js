@@ -66,6 +66,15 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Function to load content
     function loadContent(url) {
+        // Track the page view in Google Analytics
+        if (typeof gtag === 'function') {
+            gtag('event', 'page_view', {
+                'page_location': window.location.href,
+                'page_path': url,
+                'page_title': url.split('/').pop()
+            });
+        }
+        
         // Fetch the HTML content
         fetch(url)
             .then(response => {
@@ -184,6 +193,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to get a random topic
     function getRandomTopic() {
+        // Track the random topic button click in Google Analytics
+        if (typeof gtag === 'function') {
+            gtag('event', 'random_topic_click', {
+                'event_category': 'engagement',
+                'event_label': 'Random Topic Button'
+            });
+        }
+        
         // Define all possible level files
         const levelFiles = [
             'levels/a1/level_1.html',
