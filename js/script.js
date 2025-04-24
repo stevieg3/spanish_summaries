@@ -53,6 +53,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 matchingLink.classList.add('active');
                 loadContent(lastLevel);
             }
+        } else {
+            // No saved level, load Level 1 by default
+            const defaultLevel = 'levels/a1/level_1.html';
+            const defaultLink = document.querySelector(`.sidebar a[data-level="${defaultLevel}"]`);
+            if (defaultLink) {
+                defaultLink.classList.add('active');
+                loadContent(defaultLevel);
+            }
         }
     }
     
