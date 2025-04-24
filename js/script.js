@@ -104,7 +104,51 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const sidebarToggle = document.querySelector('.sidebar-toggle');
     const sidebar = document.querySelector('.sidebar');
+    
     sidebarToggle.addEventListener('click', function() {
-        sidebar.classList.toggle('collapsed');
+        if (window.innerWidth <= 768) {
+            sidebar.classList.toggle('active');
+            // Update aria-expanded attribute
+            const isExpanded = sidebar.classList.contains('active');
+            sidebarToggle.setAttribute('aria-expanded', isExpanded);
+        } else {
+            sidebar.classList.toggle('collapsed');
+            // Update aria-expanded attribute
+            const isExpanded = !sidebar.classList.contains('collapsed');
+            sidebarToggle.setAttribute('aria-expanded', isExpanded);
+        }
+    });
+    
+    // Close sidebar when clicking on a link (mobile only)
+    if (window.innerWidth <= 768) {
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                sidebar.classList.remove('active');
+                sidebarToggle.setAttribute('aria-expanded', 'false');
+            });
+        });
+    }
+    
+    // Close sidebar when clicking outside (mobile only)
+    document.addEventListener('click', function(event) {
+        if (window.innerWidth <= 768 && 
+            !sidebar.contains(event.target) && 
+            event.target !== sidebarToggle) {
+            sidebar.classList.remove('active');
+            sidebarToggle.setAttribute('aria-expanded', 'false');
+        }
+    });
+    
+    // Handle resize events
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
+            sidebar.classList.remove('active');
+            const isExpanded = !sidebar.classList.contains('collapsed');
+            sidebarToggle.setAttribute('aria-expanded', isExpanded);
+        } else {
+            sidebar.classList.remove('collapsed');
+            const isExpanded = sidebar.classList.contains('active');
+            sidebarToggle.setAttribute('aria-expanded', isExpanded);
+        }
     });
 });
