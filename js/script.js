@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to get a random topic
     function getRandomTopic() {
-        // 1. Define all possible level files
+        // Define all possible level files
         const levelFiles = [
             'levels/a1/level_1.html',
             'levels/a1/level_2.html',
@@ -187,93 +187,123 @@ document.addEventListener('DOMContentLoaded', function() {
             'levels/b1/level_7.html'
         ];
         
-        // 2. Pick a random level file
-        const randomLevelIndex = Math.floor(Math.random() * levelFiles.length);
-        const randomLevelFile = levelFiles[randomLevelIndex];
-        
-        // 3. Load the random level file
-        fetch(randomLevelFile)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.text();
-            })
-            .then(html => {
-                // 4. Create a temporary div to parse the HTML
+        // Fetch all files in parallel
+        Promise.all(levelFiles.map(file => 
+            fetch(file)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Failed to load ${file}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    return { file, html };
+                })
+                .catch(error => {
+                    console.error(`Error loading ${file}:`, error);
+                    return { file, error };
+                })
+        ))
+        .then(results => {
+            // Filter out any failed fetches
+            const successfulResults = results.filter(result => !result.error);
+            
+            if (successfulResults.length === 0) {
+                throw new Error('Could not load any content files');
+            }
+            
+            // Collect all topics from all files
+            const allTopics = [];
+            
+            successfulResults.forEach(result => {
                 const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = html;
+                tempDiv.innerHTML = result.html;
                 
-                // 5. Extract all h2 sections
                 const h2Elements = tempDiv.querySelectorAll('h2');
                 
-                if (h2Elements.length === 0) {
-                    contentContainer.innerHTML = '<div class="error-message"><h2>No topics found</h2></div>';
-                    return;
-                }
-                
-                // 6. Pick a random h2 element
-                const randomHeaderIndex = Math.floor(Math.random() * h2Elements.length);
-                const randomHeader = h2Elements[randomHeaderIndex];
-                
-                // 7. Extract the section content (h2 + all elements until next h2)
-                const sectionContent = [];
-                sectionContent.push(randomHeader.outerHTML);
-                
-                let currentElement = randomHeader.nextElementSibling;
-                while (currentElement && currentElement.tagName !== 'H2') {
-                    sectionContent.push(currentElement.outerHTML);
-                    currentElement = currentElement.nextElementSibling;
-                }
-                
-                // 8. Create a wrapper with information about the source
-                const levelName = randomLevelFile.split('/').pop().replace('.html', '');
-                const levelNumber = levelName.replace('level_', '');
-                const wrapperHTML = `
-                    <div class="level-content">
-                        <div class="topic-source">
-                            <p><a href="#" class="level-link" data-level="${randomLevelFile}">Level ${levelNumber}</a></p>
-                        </div>
-                        ${sectionContent.join('')}
-                    </div>
-                `;
-                
-                // 9. Display the content
-                contentContainer.innerHTML = wrapperHTML;
-                
-                // 10. Add click event listener to the level link
-                const levelLink = contentContainer.querySelector('.level-link');
-                if (levelLink) {
-                    levelLink.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const levelUrl = this.getAttribute('data-level');
-                        
-                        // Update sidebar active link
-                        navLinks.forEach(link => link.classList.remove('active'));
-                        const matchingLink = document.querySelector(`.sidebar a[data-level="${levelUrl}"]`);
-                        if (matchingLink) {
-                            matchingLink.classList.add('active');
-                        }
-                        
-                        // Save to localStorage
-                        localStorage.setItem('lastSelectedLevel', levelUrl);
-                        
-                        // Load the full level content
-                        loadContent(levelUrl);
-                    });
-                }
-                
-                // 11. Make any tables responsive
-                makeTablesResponsive();
-            })
-            .catch(error => {
-                console.error('Error loading random topic:', error);
-                contentContainer.innerHTML = `
-                    <div class="error-message">
-                        <h2>Error Loading Content</h2>
-                        <p>Sorry, we couldn't load a random topic. Please try again.</p>
-                    </div>
-                `;
+                h2Elements.forEach(h2Element => {
+                    // Create an object for each topic
+                    const topic = {
+                        file: result.file,
+                        header: h2Element,
+                        // Store all elements until the next h2
+                        content: []
+                    };
+                    
+                    // Add the h2 element itself
+                    topic.content.push(h2Element.outerHTML);
+                    
+                    // Add all elements until the next h2
+                    let currentElement = h2Element.nextElementSibling;
+                    while (currentElement && currentElement.tagName !== 'H2') {
+                        topic.content.push(currentElement.outerHTML);
+                        currentElement = currentElement.nextElementSibling;
+                    }
+                    
+                    allTopics.push(topic);
+                });
             });
+            
+            if (allTopics.length === 0) {
+                throw new Error('No topics found in any file');
+            }
+            
+            // Select a random topic from the pool of all topics
+            const randomIndex = Math.floor(Math.random() * allTopics.length);
+            const randomTopic = allTopics[randomIndex];
+            
+            // Extract level information
+            const levelFile = randomTopic.file;
+            const levelName = levelFile.split('/').pop().replace('.html', '');
+            const levelNumber = levelName.replace('level_', '');
+            
+            // Create wrapper with source information
+            const wrapperHTML = `
+                <div class="level-content">
+                    <div class="topic-source">
+                        <p><a href="#" class="level-link" data-level="${levelFile}">Level ${levelNumber}</a></p>
+                    </div>
+                    ${randomTopic.content.join('')}
+                </div>
+            `;
+            
+            // Display the content
+            contentContainer.innerHTML = wrapperHTML;
+            
+            // Add click event listener to the level link
+            const levelLink = contentContainer.querySelector('.level-link');
+            if (levelLink) {
+                levelLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const levelUrl = this.getAttribute('data-level');
+                    
+                    // Update sidebar active link
+                    navLinks.forEach(link => link.classList.remove('active'));
+                    const matchingLink = document.querySelector(`.sidebar a[data-level="${levelUrl}"]`);
+                    if (matchingLink) {
+                        matchingLink.classList.add('active');
+                    }
+                    
+                    // Save to localStorage
+                    localStorage.setItem('lastSelectedLevel', levelUrl);
+                    
+                    // Load the full level content
+                    loadContent(levelUrl);
+                });
+            }
+            
+            // Make any tables responsive
+            makeTablesResponsive();
+        })
+        .catch(error => {
+            console.error('Error loading random topic:', error);
+            contentContainer.innerHTML = `
+                <div class="error-message">
+                    <h2>Error Loading Content</h2>
+                    <p>Sorry, we couldn't load a random topic. Please try again.</p>
+                    <p>Error: ${error.message}</p>
+                </div>
+            `;
+        });
     }
 });
