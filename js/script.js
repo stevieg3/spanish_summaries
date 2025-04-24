@@ -27,6 +27,11 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Load the content
             loadContent(levelUrl);
+            
+            // On mobile, close the sidebar after selecting a link
+            if (window.innerWidth <= 768) {
+                closeMobileMenu();
+            }
         });
     });
     
@@ -102,9 +107,39 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Desktop sidebar toggle
     const sidebarToggle = document.querySelector('.sidebar-toggle');
     const sidebar = document.querySelector('.sidebar');
     sidebarToggle.addEventListener('click', function() {
         sidebar.classList.toggle('collapsed');
+    });
+    
+    // Mobile menu functionality
+    const mobileMenuButton = document.querySelector('.mobile-menu-button');
+    const sidebarClose = document.querySelector('.sidebar-close');
+    const sidebarOverlay = document.querySelector('.sidebar-overlay');
+    
+    // Open mobile menu
+    mobileMenuButton.addEventListener('click', function() {
+        sidebar.classList.add('active');
+        sidebarOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Prevent scrolling
+    });
+    
+    // Close mobile menu
+    sidebarClose.addEventListener('click', closeMobileMenu);
+    sidebarOverlay.addEventListener('click', closeMobileMenu);
+    
+    function closeMobileMenu() {
+        sidebar.classList.remove('active');
+        sidebarOverlay.classList.remove('active');
+        document.body.style.overflow = ''; // Restore scrolling
+    }
+    
+    // Handle window resize
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
+            closeMobileMenu();
+        }
     });
 });
