@@ -35,6 +35,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
+    // Random Topic Button Event Listener
+    const randomButton = document.getElementById('random-topic-btn');
+    if (randomButton) {
+        randomButton.addEventListener('click', getRandomTopic);
+    }
+    
     // Function to initialize the site
     function initSite() {
         // Check if there's a saved level in localStorage
@@ -167,4 +173,107 @@ document.addEventListener('DOMContentLoaded', function() {
             closeMobileMenu();
         }
     });
+
+    // Function to get a random topic
+    function getRandomTopic() {
+        // 1. Define all possible level files
+        const levelFiles = [
+            'levels/a1/level_1.html',
+            'levels/a1/level_2.html',
+            'levels/a1/level_3.html',
+            'levels/a2/level_4.html',
+            'levels/a2/level_5.html',
+            'levels/a2/level_6.html',
+            'levels/b1/level_7.html'
+        ];
+        
+        // 2. Pick a random level file
+        const randomLevelIndex = Math.floor(Math.random() * levelFiles.length);
+        const randomLevelFile = levelFiles[randomLevelIndex];
+        
+        // 3. Load the random level file
+        fetch(randomLevelFile)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(html => {
+                // 4. Create a temporary div to parse the HTML
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = html;
+                
+                // 5. Extract all h2 sections
+                const h2Elements = tempDiv.querySelectorAll('h2');
+                
+                if (h2Elements.length === 0) {
+                    contentContainer.innerHTML = '<div class="error-message"><h2>No topics found</h2></div>';
+                    return;
+                }
+                
+                // 6. Pick a random h2 element
+                const randomHeaderIndex = Math.floor(Math.random() * h2Elements.length);
+                const randomHeader = h2Elements[randomHeaderIndex];
+                
+                // 7. Extract the section content (h2 + all elements until next h2)
+                const sectionContent = [];
+                sectionContent.push(randomHeader.outerHTML);
+                
+                let currentElement = randomHeader.nextElementSibling;
+                while (currentElement && currentElement.tagName !== 'H2') {
+                    sectionContent.push(currentElement.outerHTML);
+                    currentElement = currentElement.nextElementSibling;
+                }
+                
+                // 8. Create a wrapper with information about the source
+                const levelName = randomLevelFile.split('/').pop().replace('.html', '');
+                const levelNumber = levelName.replace('level_', '');
+                const wrapperHTML = `
+                    <div class="level-content">
+                        <div class="topic-source">
+                            <p><a href="#" class="level-link" data-level="${randomLevelFile}">Level ${levelNumber}</a></p>
+                        </div>
+                        ${sectionContent.join('')}
+                    </div>
+                `;
+                
+                // 9. Display the content
+                contentContainer.innerHTML = wrapperHTML;
+                
+                // 10. Add click event listener to the level link
+                const levelLink = contentContainer.querySelector('.level-link');
+                if (levelLink) {
+                    levelLink.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const levelUrl = this.getAttribute('data-level');
+                        
+                        // Update sidebar active link
+                        navLinks.forEach(link => link.classList.remove('active'));
+                        const matchingLink = document.querySelector(`.sidebar a[data-level="${levelUrl}"]`);
+                        if (matchingLink) {
+                            matchingLink.classList.add('active');
+                        }
+                        
+                        // Save to localStorage
+                        localStorage.setItem('lastSelectedLevel', levelUrl);
+                        
+                        // Load the full level content
+                        loadContent(levelUrl);
+                    });
+                }
+                
+                // 11. Make any tables responsive
+                makeTablesResponsive();
+            })
+            .catch(error => {
+                console.error('Error loading random topic:', error);
+                contentContainer.innerHTML = `
+                    <div class="error-message">
+                        <h2>Error Loading Content</h2>
+                        <p>Sorry, we couldn't load a random topic. Please try again.</p>
+                    </div>
+                `;
+            });
+    }
 });
