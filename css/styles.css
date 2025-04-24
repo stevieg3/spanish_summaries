@@ -250,6 +250,21 @@ footer {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
+/* Table wrapper for horizontal scrolling */
+.level-content .table-wrapper,
+.content .level-content .table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    margin: 30px 0;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+}
+
+/* Adjust table margin when inside wrapper */
+.level-content .table-wrapper table,
+.content .level-content .table-wrapper table {
+    margin: 0; /* Remove table margin since wrapper has margin */
+}
+
 .level-content th, 
 .level-content td,
 .content .level-content th,

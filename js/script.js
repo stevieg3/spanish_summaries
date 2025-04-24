@@ -69,6 +69,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Insert the content
                 contentContainer.innerHTML = bodyContent;
+                
+                // Make tables responsive by wrapping them in scrollable containers
+                makeTablesResponsive();
             })
             .catch(error => {
                 contentContainer.innerHTML = `
@@ -105,6 +108,23 @@ document.addEventListener('DOMContentLoaded', function() {
             // If no body found, return the entire content
             return '<div class="level-content">' + tempDiv.innerHTML + '</div>';
         }
+    }
+
+    // Function to make tables responsive with horizontal scrolling
+    function makeTablesResponsive() {
+        const tables = contentContainer.querySelectorAll('table');
+        tables.forEach(table => {
+            // Check if table is not already wrapped
+            if (!table.parentElement.classList.contains('table-wrapper')) {
+                // Create wrapper div
+                const wrapper = document.createElement('div');
+                wrapper.className = 'table-wrapper';
+                
+                // Replace table with wrapper containing table
+                table.parentNode.insertBefore(wrapper, table);
+                wrapper.appendChild(table);
+            }
+        });
     }
 
     // Desktop sidebar toggle
