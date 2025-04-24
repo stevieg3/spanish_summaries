@@ -356,19 +356,13 @@ footer {
         text-align: center;
         box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         cursor: pointer;
+        transition: background-color 0.3s ease;
     }
     
-    /* Close button for sidebar */
-    .sidebar-close {
-        display: block;
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        background-color: transparent;
-        border: none;
-        color: #333;
-        font-size: 1.5rem;
-        cursor: pointer;
+    /* Mobile menu button when sidebar is active - to make it visible over the sidebar */
+    .sidebar.active ~ .mobile-menu-button,
+    .sidebar.active + .mobile-menu-button {
+        background-color: #fff;
     }
     
     /* Overlay when sidebar is open */
@@ -390,6 +384,14 @@ footer {
     /* Adjust header for mobile */
     header {
         padding-left: 60px;
+        justify-content: center;
+    }
+    
+    /* Center the logo on mobile */
+    header .logo {
+        margin: 0 auto;
+        position: relative;
+        right: 20px; /* Offset for the menu button space */
     }
 }
 
