@@ -28,6 +28,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // Load the content
             loadContent(levelUrl);
             
+            // Scroll to the top of the page
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
             // On mobile, close the sidebar after selecting a link
             if (window.innerWidth <= 768) {
                 closeMobileMenu();
@@ -314,6 +317,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // Load the full level content
                     loadContent(levelUrl);
+                    
+                    // Scroll to the top of the page
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 });
             }
             
